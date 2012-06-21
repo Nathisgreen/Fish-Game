@@ -55,6 +55,9 @@ public class WorldRenderer {
 	//pearl
 	private Texture clamPearlTexture;
 	
+	//crab
+	private Texture crabTexture;
+	
 	private SpriteBatch spriteBatch;
 	private boolean debug = false;
 	private int width;
@@ -116,6 +119,9 @@ public class WorldRenderer {
 		clamTopTexture = new Texture(Gdx.files.internal("images/sprClamTop.png"));
 		//pearl
 		clamPearlTexture = new Texture(Gdx.files.internal("images/sprPearl.png"));
+		
+		//crab
+		crabTexture = new Texture(Gdx.files.internal("images/sprCrab.png"));
 	}
 	/**
 	 * Render the world
@@ -203,6 +209,12 @@ public class WorldRenderer {
 		
 		//Draw all the fishies
 		drawBlocks();
+		
+		//Draw crab
+		spriteBatch.setColor(1,1,1,1);
+		spriteBatch.draw(crabTexture, (world.getCrab().getPosition().x ) * ppuX,
+				(world.getCrab().getPosition().y) * ppuY ,0.7f * ppuX,0.7f * ppuY);
+		
 
 		//draw texts
 		for (MultiplyerText aText: world.getMultiplyerList())

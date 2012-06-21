@@ -45,8 +45,7 @@ public class World {
 	
 	private int life = 3;
 	
-	//ensures no clams overlap (doesnt work lul)
-	private boolean allClamsHappy = false;
+	private Crab theCrab;
 	
 	//GETTERS
 	public Array<Block> getBlocks(){
@@ -120,6 +119,10 @@ public class World {
 	public Array<MultiplyerText> getMultiplyerList()
 	{
 		return multiplyerList;
+	}
+	public Crab getCrab()
+	{
+		return theCrab;
 	}
 
 	
@@ -259,7 +262,8 @@ public class World {
 	
 		createBlocks();
 		
-
+		theCrab = new Crab(new Vector2(5,0.5f));
+		
 		jellyArray.add(new JellyFish((new Vector2(1 + aRandom.nextInt(8), 1+ aRandom.nextInt(6)))));
 		
 		for (int i = 1; i < 4; i ++)
@@ -415,6 +419,8 @@ public class World {
 				aText.update(delta);
 			}
 		}
+		
+		theCrab.update(delta);
 	}
 	
 	//handles player getting hurt logic
