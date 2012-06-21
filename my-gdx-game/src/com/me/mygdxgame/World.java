@@ -262,9 +262,9 @@ public class World {
 
 		jellyArray.add(new JellyFish((new Vector2(1 + aRandom.nextInt(8), 1+ aRandom.nextInt(6)))));
 		
-		for (int i = 0; i < 3; i ++)
+		for (int i = 1; i < 4; i ++)
 		{
-			clamArray.add(new Clam(new Vector2(aRandom.nextFloat() * 10, (aRandom.nextFloat() /2) + 0.2f)));
+			clamArray.add(new Clam(new Vector2(i *2 , (aRandom.nextFloat() /2) + 0.2f)));
 			
 		}
 
