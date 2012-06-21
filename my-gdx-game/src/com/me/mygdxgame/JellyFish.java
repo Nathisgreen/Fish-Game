@@ -16,6 +16,9 @@ public class JellyFish extends Block{
 	float stateTime = 0f;
 	private boolean canHit = true;
 	private int hitTimer = 0;
+	
+	private float yy;
+	private float y1;
 
 	public JellyFish(Vector2 pos) 
 	{
@@ -71,8 +74,8 @@ public class JellyFish extends Block{
 
 	public boolean checkInside(Rectangle aBox) {
 		
-		float yy = WorldRenderer.getCameraHeight() - getPosition().y;
-		float y1 = aBox.y;
+		yy = WorldRenderer.getCameraHeight() - getPosition().y;
+		y1 = aBox.y;
 
 		if ((aBox.x> position.x * WorldRenderer.ppuX && aBox.x < (position.x + getBounds().width) * WorldRenderer.ppuX)
 				|| (aBox.x + aBox.width> position.x * WorldRenderer.ppuX && aBox.x + aBox.width < (position.x + getBounds().width) * WorldRenderer.ppuX))

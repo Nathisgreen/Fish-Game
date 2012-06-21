@@ -21,6 +21,8 @@ public class World {
 	
 	private Array<ScoreText> scoreArray = new Array<ScoreText>();
 	
+	private Array<CrabBullet> crabBulletArray = new Array<CrabBullet>();
+	
 	//Array of multiplyer texts
 	public static Array<MultiplyerText> multiplyerList = new Array<MultiplyerText>();
 	
@@ -46,6 +48,8 @@ public class World {
 	private int life = 3;
 	
 	private Crab theCrab;
+	
+	private boolean doDestroy = false;
 	
 	//GETTERS
 	public Array<Block> getBlocks(){
@@ -124,6 +128,10 @@ public class World {
 	{
 		return theCrab;
 	}
+	public Array<CrabBullet> getCrabBulletArray()
+	{
+		return crabBulletArray;
+	}
 
 	
 	public World(){
@@ -174,8 +182,8 @@ public class World {
 				tempList.add(aBlock);
 			}
 		}
-		
-		boolean doDestroy = true;
+
+		doDestroy = true;
 		int firstColor = -1;
 		numberInSelected = tempList.size;
 		if (tempList.size > 0)
@@ -348,7 +356,7 @@ public class World {
 						score += 400;
 						
 						//pooling system for score texts
-						Boolean hasCreated = false;
+						doDestroy = false;
 						
 						//first look for one that isnt being used 
 						if (scoreArray.size != 0)
@@ -359,7 +367,7 @@ public class World {
 								if (aText.getAlpha() == 0)
 								{
 									//flag we found one to stop new one being made
-									hasCreated = true;
+									doDestroy = true;
 									//reset up the text with new position
 									aText.setup(400, new Vector2(aClam.getPos().x,aClam.getPos().y + (aClam.getBounds().height/2)));
 									//stop the loop as we got what we need
@@ -369,7 +377,7 @@ public class World {
 						}
 						
 						//if one wasnt found
-						if (!hasCreated)
+						if (!doDestroy)
 						{
 							//create a new one and add to array
 							scoreArray.add(new ScoreText(400, new Vector2(aClam.getPos().x,aClam.getPos().y + (aClam.getBounds().height/2))));
@@ -421,6 +429,23 @@ public class World {
 		}
 		
 		theCrab.update(delta);
+		for (CrabBullet aBullet: crabBulletArray)
+		{
+			if (aBullet.getActive())
+			{
+				aBullet.update(delta);
+			}
+		}
+		
+		
+		if (selector.getTouched())
+		{
+			if (theCrab.checkInside(fingerBox))
+			{
+				createCrabBullet(new Vector2(theCrab.getPosition().x + (theCrab.getBounds().width/2) - 0.1f, theCrab.getPosition().y + (theCrab.getBounds().height)));
+			}
+		}
+		
 	}
 	
 	//handles player getting hurt logic
@@ -496,6 +521,41 @@ public class World {
 		{
 			//create a new one and add to array
 			multiplyerList.add(new MultiplyerText(value, pos, aType, aSize, aMaxSize));
+		}
+	}
+	
+	/**
+	 * Finds or creates a crab bullet
+	 * @param pos	the position on the screen the text will be drawn
+	 */
+	private void createCrabBullet(Vector2 pos)
+	{		
+		//pooling system for crab bullets texts
+		Boolean hasCreated = false;
+		
+		//first look for one that isnt being used 
+		if (crabBulletArray.size != 0)
+		{
+			for(CrabBullet aBullet: crabBulletArray)
+			{
+				//if the alpha is 0 its done being used
+				if (!aBullet.getActive())
+				{
+					//flag we found one to stop new one being made
+					hasCreated = true;
+					//reset up the text with new position
+					aBullet.setup(pos);
+					//stop the loop as we got what we need
+					break;
+				}
+			}
+		}
+		
+		//if one wasn't found
+		if (!hasCreated)
+		{
+			//create a new one and add to array
+			crabBulletArray.add(new CrabBullet(pos));
 		}
 	}
 }

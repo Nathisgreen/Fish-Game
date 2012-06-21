@@ -57,6 +57,7 @@ public class WorldRenderer {
 	
 	//crab
 	private Texture crabTexture;
+	private Texture crabBulletTexture;
 	
 	private SpriteBatch spriteBatch;
 	private boolean debug = false;
@@ -122,6 +123,7 @@ public class WorldRenderer {
 		
 		//crab
 		crabTexture = new Texture(Gdx.files.internal("images/sprCrab.png"));
+		crabBulletTexture = new Texture(Gdx.files.internal("images/sprBullet.png"));
 	}
 	/**
 	 * Render the world
@@ -215,6 +217,12 @@ public class WorldRenderer {
 		spriteBatch.draw(crabTexture, (world.getCrab().getPosition().x ) * ppuX,
 				(world.getCrab().getPosition().y) * ppuY ,0.7f * ppuX,0.7f * ppuY);
 		
+		for (CrabBullet aBullet: world.getCrabBulletArray())
+		{
+			spriteBatch.draw(crabBulletTexture, (aBullet.getPosition().x ) * ppuX,
+					(aBullet.getPosition().y) * ppuY ,0.2f * ppuX,0.2f * ppuY);
+		}
+		
 
 		//draw texts
 		for (MultiplyerText aText: world.getMultiplyerList())
@@ -255,6 +263,7 @@ public class WorldRenderer {
 		
 		
 		font.draw(spriteBatch,"Life: " + world.getLife()  ,10,40);
+		
 		
 		//debug draws
 		/*
@@ -301,8 +310,8 @@ public class WorldRenderer {
 		
 		spriteBatch.end();
 		
-		//aLogger.log();
-		//drawDebug();
+		aLogger.log();
+		drawDebug();
 		drawPowerUps();
 		drawSelector();
 		//Powerup Bar
@@ -432,6 +441,12 @@ public class WorldRenderer {
 			debugRenderer.rect(x1, y1, rect.width, rect.height);
 			
 		}
+		
+		Rectangle rectCrab = world.getCrab().getBounds();
+		float x1 = world.getCrab().getPosition().x + rectCrab.x;
+		float y1 = world.getCrab().getPosition().y + rectCrab.y;
+		
+		debugRenderer.rect(x1, y1, rectCrab.width, rectCrab.height);
 		
 		//System.out.println("FingBoxX: " + world.getFingerRect().x);
 		//System.out.println("FingBoxY: " + world.getFingerRect().y);
