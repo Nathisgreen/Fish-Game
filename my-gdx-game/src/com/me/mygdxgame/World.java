@@ -344,7 +344,7 @@ public class World {
 		//update clams
 		for (Clam aClam: clamArray)
 		{
-			aClam.update();
+			aClam.update(delta);
 			
 			if (selector.getTouched())
 			{
