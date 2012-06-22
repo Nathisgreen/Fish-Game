@@ -14,8 +14,8 @@ public class Clam {
 	private Random aRandom = new Random();
 	
 	private int count;
-	private int openTime;
-	private int closeTime = 70;
+	private float openTime;
+	private float closeTime = 4500;
 	
 	private boolean hasPearl = true;
 	
@@ -25,7 +25,7 @@ public class Clam {
 		setBoundsWidth(0.65f);
 		setBoundsHeight(0.55f);
 		
-		openTime = aRandom.nextInt(RANDOMTIME) + 150;
+		openTime = -1;
 
 		if (aRandom.nextInt(2) == 1)
 		{
@@ -77,13 +77,15 @@ public class Clam {
 		hasPearl = aBool;
 	}
 	
-	public void update ()
+	public void update (float delta)
 	{
+		if (openTime == -1){openTime = aRandom.nextInt(RANDOMTIME) + 150 * delta ;}
+		
 		if (closed)
 		{
 			if ( count < openTime)
 			{
-				count++;
+				count += 100 * delta;
 			}
 			else
 			{
@@ -94,14 +96,14 @@ public class Clam {
 		}
 		else
 		{
-			if (count < closeTime)
+			if (count < closeTime * delta)
 			{
-				count ++;
+				count += 100 * delta;
 			}
 			else
 			{
 				count = 0;
-				openTime = aRandom.nextInt(RANDOMTIME) + 150;
+				openTime = aRandom.nextInt(RANDOMTIME) + 150 * delta ;
 
 				if (aRandom.nextInt(2) == 1)
 				{

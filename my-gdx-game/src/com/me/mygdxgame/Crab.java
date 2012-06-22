@@ -12,6 +12,9 @@ public class Crab {
 	private float yy;
 	private float y1;
 	
+	private float shootTime = 2;
+	private float timer = 0;
+	private boolean canShoot = true;
 
 	public Crab(Vector2 pos)
 	{
@@ -27,6 +30,18 @@ public class Crab {
 	
 	public void update(float delta)
 	{
+		if (!canShoot)
+		{
+			if (timer < shootTime )
+			{
+				timer += 10 *delta;
+			}
+			else
+			{
+				timer = 0;
+				canShoot = true;
+			}
+		}
 		
 		if (position.x < 0 )
 		{
@@ -60,7 +75,15 @@ public class Crab {
 			if ((y1 > yy * WorldRenderer.ppuY && y1 < (yy + getBounds().height) * WorldRenderer.ppuY) ||
 					(y1 + (aBox.height ) > yy * WorldRenderer.ppuY && y1 + (aBox.height )  < (yy + getBounds().height) * WorldRenderer.ppuY))
 			{
-				return true;
+				if (canShoot)
+				{
+					canShoot = false;
+					return true;
+				}
+				else
+				{
+					return false;
+				}
 			}
 		}
 		
