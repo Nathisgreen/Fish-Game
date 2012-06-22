@@ -310,8 +310,8 @@ public class WorldRenderer {
 		
 		spriteBatch.end();
 		
-		aLogger.log();
-		drawDebug();
+		//aLogger.log();
+		//drawDebug();
 		drawPowerUps();
 		drawSelector();
 		//Powerup Bar
