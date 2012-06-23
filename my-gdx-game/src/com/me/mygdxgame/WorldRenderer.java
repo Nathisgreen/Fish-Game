@@ -59,6 +59,9 @@ public class WorldRenderer {
 	private Texture crabTexture;
 	private Texture crabBulletTexture;
 	
+	//wall
+	private Texture wallTexture;
+	
 	private SpriteBatch spriteBatch;
 	private boolean debug = false;
 	private int width;
@@ -124,6 +127,9 @@ public class WorldRenderer {
 		//crab
 		crabTexture = new Texture(Gdx.files.internal("images/sprCrab.png"));
 		crabBulletTexture = new Texture(Gdx.files.internal("images/sprBullet.png"));
+		
+		//wall
+		wallTexture = new Texture(Gdx.files.internal("images/sprWall.png"));
 	}
 	/**
 	 * Render the world
@@ -223,6 +229,19 @@ public class WorldRenderer {
 					(aBullet.getPosition().y) * ppuY ,0.2f * ppuX,0.2f * ppuY);
 		}
 		
+		for (Wall aWall: CrabAvoidController.getWallArray())
+		{
+			if (aWall.getActive())
+			{
+				spriteBatch.draw(wallTexture, (aWall.getPosition().x ) * ppuX,
+						(aWall.getPosition().y) * ppuY ,1 * ppuX,1 * ppuY);
+			}
+		}
+		
+		spriteBatch.setColor(1,0,0,0.5f);
+		spriteBatch.draw(wallTexture, (CrabAvoidController.getWallDestroyer().getPosition().x ) * ppuX,
+				(CrabAvoidController.getWallDestroyer().getPosition().y) * ppuY ,2 * ppuX,1 * ppuY);
+		spriteBatch.setColor(1,1,1,1);
 
 		//draw texts
 		for (MultiplyerText aText: world.getMultiplyerList())

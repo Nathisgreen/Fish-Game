@@ -23,6 +23,7 @@ public class World {
 	
 	private Array<CrabBullet> crabBulletArray = new Array<CrabBullet>();
 	
+	
 	//Array of multiplyer texts
 	public static Array<MultiplyerText> multiplyerList = new Array<MultiplyerText>();
 	
@@ -50,6 +51,8 @@ public class World {
 	private Crab theCrab;
 	
 	private boolean doDestroy = false;
+	
+	private CrabAvoidController aCrabAvoidController = new CrabAvoidController();
 	
 	//GETTERS
 	public Array<Block> getBlocks(){
@@ -299,7 +302,8 @@ public class World {
 	
 	public void update(float delta)
 	{
-
+		aCrabAvoidController.update(delta);
+		
 		if (!isFrozen)
 		{
 			for (Block aBlock : blocks)
