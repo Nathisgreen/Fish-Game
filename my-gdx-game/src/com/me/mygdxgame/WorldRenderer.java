@@ -238,6 +238,15 @@ public class WorldRenderer {
 			}
 		}
 		
+		for (Pearl aPearl: CrabAvoidController.getPearlArray())
+		{
+			if (aPearl.getActive())
+			{
+				spriteBatch.draw(clamPearlTexture, (aPearl.getPosition().x ) * ppuX,
+						(aPearl.getPosition().y) * ppuY ,0.7f * ppuX,0.7f * ppuY);
+			}
+		}
+		
 		spriteBatch.setColor(1,0,0,0.5f);
 		spriteBatch.draw(wallTexture, (CrabAvoidController.getWallDestroyer().getPosition().x ) * ppuX,
 				(CrabAvoidController.getWallDestroyer().getPosition().y) * ppuY ,2 * ppuX,1 * ppuY);

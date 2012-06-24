@@ -58,7 +58,7 @@ public class WallDestroyer {
 		
 		if (!dir)
 		{
-			if (position.x > 1)
+			if (position.x > 2)
 			{
 				position.x -= 1f * delta;
 			}
@@ -74,8 +74,11 @@ public class WallDestroyer {
 	
 	public boolean checkWall(Wall aWall)
 	{
-		if (aWall.getPosition().x  >= position.x && 
-			aWall.getPosition().x <= position.x + bounds.width  &&
+		if ((aWall.getPosition().x  >= position.x && 
+			aWall.getPosition().x <= position.x + bounds.width ||
+			aWall.getPosition().x + aWall.getBounds().width >= position.x &&
+			aWall.getPosition().x + aWall.getBounds().width <= position.x + bounds.width
+				)  &&
 			aWall.getPosition().y <= position.y &&
 			aWall.getPosition().y+1 >= position.y - bounds.height)
 		{

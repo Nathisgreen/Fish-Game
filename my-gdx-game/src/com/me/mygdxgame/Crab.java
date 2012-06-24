@@ -90,4 +90,54 @@ public class Crab {
 		return false;
 	}
 	
+	public boolean checkWall(Wall aWall)
+	{
+		if ((position.x > aWall.getPosition().x && position.x < aWall.getPosition().x + aWall.getBounds().width)
+				|| (position.x + bounds.width > aWall.getPosition().x && position.x + bounds.width < aWall.getPosition().x + aWall.getBounds().width))
+			
+		{
+			
+			if ((position.y > aWall.getPosition().y && position.y < aWall.getPosition().y + aWall.getBounds().height)
+					|| (position.y + bounds.height > aWall.getPosition().y && position.y + bounds.height < aWall.getPosition().y + aWall.getBounds().height))
+
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+			
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	public boolean checkPearl(Pearl aPearl)
+	{
+		if ((position.x > aPearl.getPosition().x && position.x < aPearl.getPosition().x + aPearl.getBounds().width)
+				|| (position.x + bounds.width > aPearl.getPosition().x && position.x + bounds.width < aPearl.getPosition().x + aPearl.getBounds().width))
+			
+		{
+			
+			if ((position.y > aPearl.getPosition().y && position.y < aPearl.getPosition().y + aPearl.getBounds().height)
+					|| (position.y + bounds.height > aPearl.getPosition().y && position.y + bounds.height < aPearl.getPosition().y + aPearl.getBounds().height))
+
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+			
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
 }

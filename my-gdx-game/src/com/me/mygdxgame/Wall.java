@@ -37,6 +37,12 @@ public class Wall {
 		return bounds;
 	}
 	
+	public void setBounds(float width, float height)
+	{
+		bounds.width = width;
+		bounds.height = height;
+	}
+	
 	public boolean getActive()
 	{
 		return active;

@@ -450,6 +450,32 @@ public class World {
 			}
 		}
 		
+		for(Wall aWall: CrabAvoidController.getWallArray())
+		{
+			if ( aWall.getActive())
+			{
+				if (theCrab.checkWall(aWall))
+				{
+					hurt();
+				}
+			}
+		}
+		
+		for(Pearl aPearl: CrabAvoidController.getPearlArray())
+		{
+			if ( aPearl.getActive())
+			{
+				if (theCrab.checkPearl(aPearl))
+				{
+					aPearl.setActive(false);
+					
+					//show +100 text like with clams
+					
+					score += 100;
+				}
+			}
+		}
+		
 	}
 	
 	//handles player getting hurt logic
@@ -485,6 +511,7 @@ public class World {
 		clamArray.clear();
 		powerupList.clear();
 		
+		aCrabAvoidController.reset();
 		createDemoWorld();
 		
 	}
