@@ -15,6 +15,10 @@ public class Crab {
 	private float shootTime = 2;
 	private float timer = 0;
 	private boolean canShoot = true;
+	
+	private boolean visible = false;
+	
+	private boolean active = false;
 
 	public Crab(Vector2 pos)
 	{
@@ -30,31 +34,34 @@ public class Crab {
 	
 	public void update(float delta)
 	{
-		if (!canShoot)
+		if (active)
 		{
-			if (timer < shootTime )
+			if (!canShoot)
 			{
-				timer += 10 *delta;
+				if (timer < shootTime )
+				{
+					timer += 10 *delta;
+				}
+				else
+				{
+					timer = 0;
+					canShoot = true;
+				}
 			}
-			else
-			{
-				timer = 0;
-				canShoot = true;
-			}
-		}
-		
-		if (position.x < 0 )
-		{
-			position.x = 1 / WorldRenderer.ppuX;
-		}
-		
-		if (position.x > 9.3f)
-		{
-			position.x = 9.3f;
 			
+			if (position.x < 0 )
+			{
+				position.x = 1 / WorldRenderer.ppuX;
+			}
+			
+			if (position.x > 9.3f)
+			{
+				position.x = 9.3f;
+				
+			}
+	
+			position.x = position.x + (Gdx.input.getAccelerometerY()) * delta ;
 		}
-
-		position.x = position.x + (Gdx.input.getAccelerometerY()) * delta ;
 
 	}
 	
@@ -138,6 +145,17 @@ public class Crab {
 		{
 			return false;
 		}
+	}
+	
+	public void setActive(boolean aBool)
+	{
+		active = aBool;
+		visible = aBool;
+	}
+	
+	public boolean getActive()
+	{
+		return active;
 	}
 	
 }

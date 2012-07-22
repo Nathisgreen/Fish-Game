@@ -220,8 +220,11 @@ public class WorldRenderer {
 		
 		//Draw crab
 		spriteBatch.setColor(1,1,1,1);
-		spriteBatch.draw(crabTexture, (world.getCrab().getPosition().x ) * ppuX,
-				(world.getCrab().getPosition().y) * ppuY ,0.7f * ppuX,0.7f * ppuY);
+		if (world.getCrab().getActive())
+		{
+			spriteBatch.draw(crabTexture, (world.getCrab().getPosition().x ) * ppuX,
+					(world.getCrab().getPosition().y) * ppuY ,0.7f * ppuX,0.7f * ppuY);
+		}
 		
 		for (CrabBullet aBullet: world.getCrabBulletArray())
 		{

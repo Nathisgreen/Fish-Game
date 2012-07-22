@@ -21,90 +21,91 @@ public class CrabAvoidController {
 	
 	private Random aRandom = new Random();
 	
+	public boolean active = false;
+	
 	public CrabAvoidController()
 	{
 		theDestroyer = new WallDestroyer(new Vector2 (4 ,9)); //9
 		createTime = aRandom.nextInt(1) + 0.5f;
 	}
 	
-	public void update(float delta)
+	public void update(float delta, int theLevel)
 	{
-		if (starting)
+		if (active)
 		{
-			for (int i = 0; i < 10; i++)
+			if (starting)
 			{
-				if (lastWall == null)
+				for (int i = 0; i < 10; i++)
 				{
-					lastWall = createWall(new Vector2(1 * i, 9));
+					if (lastWall == null)
+					{
+						lastWall = createWall(new Vector2(1 * i, 9));
+					}
+					else
+					{
+						createWall(new Vector2(1 * i, 9));
+					}
 				}
-				else
-				{
-					createWall(new Vector2(1 * i, 9));
-				}
+				starting = false;
 			}
-			starting = false;
-		}
-		
-
-		if (lastWall.getPosition().y < 7.9f + 10 *delta)
-		{
-			lastWall = null;
 			
-			for (int i = 0; i < 10; i++)
+	
+			if (lastWall.getPosition().y < 7.9f + 10 *delta)
 			{
-				if (lastWall == null)
+				lastWall = null;
+				
+				for (int i = 0; i < 10; i++)
 				{
-					lastWall = createWall(new Vector2(1 * i, 9));
-				}
-				else
-				{
-					createWall(new Vector2(1 * i, 9));
+					if (lastWall == null)
+					{
+						lastWall = createWall(new Vector2(1 * i, 9));
+					}
+					else
+					{
+						createWall(new Vector2(1 * i, 9));
+					}
 				}
 			}
-		}
-		
-		
-		for (Wall aWall: wallArray)
-		{
-
-			if (aWall.getActive())
+			
+			
+			for (Wall aWall: wallArray)
+			{
+	
+				if (aWall.getActive())
+				{	
+					aWall.update(delta);
+					
+					if (theDestroyer.checkWall(aWall))
+					{
+						aWall.setActive(false);
+					}
+					
+					
+				}
+				
+			}
+			
+			//pearl creation timer
+			if (time < createTime)
+			{
+				time += 1 * delta;
+			}
+			else
 			{	
-				aWall.update(delta);
+				createPearl(new Vector2(((theDestroyer.getPosition().x)  + aRandom.nextFloat() * 1.5f  ),
+								theDestroyer.getPosition().y - theDestroyer.getBounds().height));
 				
-				if (theDestroyer.checkWall(aWall))
-				{
-					aWall.setActive(false);
-				}
-				
-				
+				time = 0;
+				createTime = aRandom.nextFloat() + 0.1f;
 			}
 			
-		}
-		
-		//pearl creation timer
-		if (time < createTime)
-		{
-			time += 1 * delta;
-		}
-		else
-		{
-			/*pearlArray.add(new Pearl(
-					new Vector2(((theDestroyer.getPosition().x)  + aRandom.nextFloat() * 1.5f  ),
-							theDestroyer.getPosition().y - theDestroyer.getBounds().height)));*/
+			for (Pearl aPearl: pearlArray)
+			{
+				aPearl.update(delta);
+			}
 			
-			createPearl(new Vector2(((theDestroyer.getPosition().x)  + aRandom.nextFloat() * 1.5f  ),
-							theDestroyer.getPosition().y - theDestroyer.getBounds().height));
-			
-			time = 0;
-			createTime = aRandom.nextFloat() + 0.1f;
+			theDestroyer.update(delta);
 		}
-		
-		for (Pearl aPearl: pearlArray)
-		{
-			aPearl.update(delta);
-		}
-		
-		theDestroyer.update(delta);
 	}
 	
 	public static Array<Wall> getWallArray()
@@ -202,11 +203,23 @@ public class CrabAvoidController {
 		
 	}
 
-	public void reset() {
+	public void reset() 
+	{
 		wallArray.clear();
 		pearlArray.clear();
 		lastWall = null;
 		starting = true;
-		
+		active = false;
+	}
+	
+	public void begin()
+	{
+		active = true;
+	}
+	
+	public void end()
+	{
+		active = false;
+		reset();
 	}
 }

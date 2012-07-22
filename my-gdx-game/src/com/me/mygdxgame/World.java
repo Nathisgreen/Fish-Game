@@ -49,10 +49,14 @@ public class World {
 	private int life = 3;
 	
 	private Crab theCrab;
+	private int wallTimer = 0;
+	private int wallLastTime = 15 * 30;
 	
 	private boolean doDestroy = false;
 	
 	private CrabAvoidController aCrabAvoidController = new CrabAvoidController();
+	
+	
 	
 	//GETTERS
 	public Array<Block> getBlocks(){
@@ -301,9 +305,7 @@ public class World {
 	}
 	
 	public void update(float delta)
-	{
-		aCrabAvoidController.update(delta);
-		
+	{	
 		if (!isFrozen)
 		{
 			for (Block aBlock : blocks)
@@ -432,7 +434,39 @@ public class World {
 			}
 		}
 		
+		
+		if (level == 3 || level == 6)
+		{
+			//only do this when beginning
+			if (wallTimer == 0)
+			{
+				aCrabAvoidController.begin();
+				theCrab.setActive(true);
+			}
+			
+			//every frame stuff
+			if (wallTimer < wallLastTime)
+			{
+				wallTimer++;
+				//System.out.println("wallTimer " + wallTimer);
+			}
+			else
+			{
+				aCrabAvoidController.end();
+				theCrab.setActive(false);
+				wallTimer = 0;
+				
+				//change level
+				level ++ ;
+				createBlocks();
+				createMultiplyerText(level, new Vector2(300,150),1,3, 5.5f);
+			}
+		}
+		
+		aCrabAvoidController.update(delta, level);
+		
 		theCrab.update(delta);
+		
 		for (CrabBullet aBullet: crabBulletArray)
 		{
 			if (aBullet.getActive())

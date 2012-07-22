@@ -10,3 +10,29 @@ Command-line arguments:  -os win32 -ws win32 -arch x86_64
 
 !ENTRY org.eclipse.ui 4 4 2012-06-21 01:02:20.364
 !MESSAGE Invalid preference page path: XML Syntax
+!SESSION 2012-07-21 16:43:35.894 -----------------------------------------------
+eclipse.buildId=I20110613-1736
+java.version=1.7.0_05
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_GB
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY org.eclipse.ui 4 4 2012-07-21 16:44:06.407
+!MESSAGE Invalid preference page path: XML Syntax
+!SESSION 2012-07-21 16:45:42.902 -----------------------------------------------
+eclipse.buildId=I20110613-1736
+java.version=1.7.0_05
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_GB
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY org.eclipse.ui 4 4 2012-07-21 16:46:06.938
+!MESSAGE Invalid preference page path: XML Syntax
+
+!ENTRY com.android.ide.eclipse.adt 4 0 2012-07-21 16:46:07.269
+!MESSAGE parseSdkContent failed
+!STACK 0
+java.lang.NullPointerException
+	at com.android.ide.eclipse.adt.AdtPlugin.getDisplay(AdtPlugin.java:313)
+	at com.android.ide.eclipse.adt.AdtPlugin$8.run(AdtPlugin.java:1268)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
