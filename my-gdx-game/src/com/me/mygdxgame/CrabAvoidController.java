@@ -23,16 +23,42 @@ public class CrabAvoidController {
 	
 	public boolean active = false;
 	
+	private boolean fade = false;
+	
+	//the alpha for everything in the mini game
+	private static float globalAlpha = 1;
+	
 	public CrabAvoidController()
 	{
 		theDestroyer = new WallDestroyer(new Vector2 (4 ,9)); //9
 		createTime = aRandom.nextInt(1) + 0.5f;
 	}
 	
-	public void update(float delta, int theLevel)
+	public void update(float delta)
 	{
 		if (active)
 		{
+			if (!fade)
+			{
+				if (globalAlpha < 1)
+				{
+					globalAlpha = 1 ;
+				}
+			}
+			
+			if (fade)
+			{
+				if (globalAlpha > 0)
+				{
+					globalAlpha = 0 ;
+				}
+				else
+				{
+					reset();
+					active = false;
+				}
+			}
+			
 			if (starting)
 			{
 				for (int i = 0; i < 10; i++)
@@ -79,7 +105,6 @@ public class CrabAvoidController {
 					{
 						aWall.setActive(false);
 					}
-					
 					
 				}
 				
@@ -210,6 +235,7 @@ public class CrabAvoidController {
 		lastWall = null;
 		starting = true;
 		active = false;
+		fade = false;
 	}
 	
 	public void begin()
@@ -219,7 +245,12 @@ public class CrabAvoidController {
 	
 	public void end()
 	{
-		active = false;
-		reset();
+		fade = true;
+		//reset();
+	}
+	
+	public static float getGlobalAlpha()
+	{
+		return globalAlpha;
 	}
 }

@@ -219,7 +219,7 @@ public class WorldRenderer {
 		drawBlocks();
 		
 		//Draw crab
-		spriteBatch.setColor(1,1,1,1);
+		spriteBatch.setColor(1,1,1,CrabAvoidController.getGlobalAlpha());
 		if (world.getCrab().getActive())
 		{
 			spriteBatch.draw(crabTexture, (world.getCrab().getPosition().x ) * ppuX,
@@ -341,7 +341,7 @@ public class WorldRenderer {
 		
 		spriteBatch.end();
 		
-		aLogger.log();
+		//aLogger.log();
 		//drawDebug();
 		drawPowerUps();
 		drawSelector();
@@ -498,7 +498,7 @@ public class WorldRenderer {
 	
 	private void drawPowerupBar()
 	{
-		debugRenderer.setProjectionMatrix(cam.combined);
+		/*debugRenderer.setProjectionMatrix(cam.combined);
 		debugRenderer.begin(ShapeType.Rectangle);
 		debugRenderer.setColor(80,80,80,1);
 		debugRenderer.rect(600 / ppuX, 10 / ppuY, 200 / ppuX, 30 / ppuY);
@@ -508,6 +508,18 @@ public class WorldRenderer {
 		debugRenderer.end();
 		debugRenderer.begin(ShapeType.FilledRectangle);
 		debugRenderer.filledRect(600 / ppuX, 11 / ppuY, (world.getPowerBar()) / ppuX, 29 / ppuY);
+		debugRenderer.end();*/
+		
+		debugRenderer.setProjectionMatrix(cam.combined);
+		debugRenderer.begin(ShapeType.Rectangle);
+		debugRenderer.setColor(80,80,80,1);
+		debugRenderer.rect((7.3f / ppuX) * ppuX, (1 / ppuY) * ppuY, (2 / ppuX) *ppuX, (0.3f / ppuY) * ppuY);
+		//debugRenderer.setColor(1,1,0,1);
+		//debugRenderer.rect((5.99f / ppuX) * ppuX, (0.99f / ppuY) * ppuY, (2.039f / ppuX) * ppuX, (0.329f / ppuY) * ppuY);
+		debugRenderer.setColor(0,1,0,1);
+		debugRenderer.end();
+		debugRenderer.begin(ShapeType.FilledRectangle);
+		debugRenderer.filledRect((6.00f / ppuX) * ppuX, (0.11f / ppuY) * ppuY, ((world.getPowerBar()/10) / ppuX) * ppuX, (0.29f / ppuY) * ppuY);
 		debugRenderer.end();
 	}
 	

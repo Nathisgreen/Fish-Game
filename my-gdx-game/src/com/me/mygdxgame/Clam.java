@@ -19,8 +19,21 @@ public class Clam {
 	
 	private boolean hasPearl = true;
 	
-	public Clam ( Vector2 aPos)
+	private int ID;
+	
+	private boolean simon = false;
+	
+	//if touch is being stored for simon
+	private boolean collect = false;
+	
+	private SimonController aSimonController;
+	
+	private boolean canPress = true;
+	
+	public Clam ( Vector2 aPos, int aID, SimonController parentSimon)
 	{
+		aSimonController = parentSimon;
+		ID = aID;
 		pos = aPos;
 		setBoundsWidth(0.65f);
 		setBoundsHeight(0.55f);
@@ -77,45 +90,62 @@ public class Clam {
 		hasPearl = aBool;
 	}
 	
+	public int getID()
+	{
+		return ID;
+	}
+	
+	public void setCollect(boolean aBool)
+	{
+		collect = aBool;
+	}
+	
 	public void update (float delta)
 	{
 		if (openTime == -1){openTime = aRandom.nextInt(RANDOMTIME) + 150 * delta ;}
 		
-		if (closed)
+		if (!simon)
 		{
-			if ( count < openTime)
+			if (closed)
 			{
-				count += 100 * delta;
-			}
-			else
-			{
-				count = 0;
-				closed = false;
-			}
-			
-		}
-		else
-		{
-			if (count < closeTime * delta)
-			{
-				count += 100 * delta;
-			}
-			else
-			{
-				count = 0;
-				openTime = aRandom.nextInt(RANDOMTIME) + 150 * delta ;
-
-				if (aRandom.nextInt(2) == 1)
+				if ( count < openTime)
 				{
-					hasPearl = true;
+					count += 100 * delta;
 				}
 				else
 				{
-					hasPearl = false;
+					count = 0;
+					closed = false;
 				}
 				
-				closed = true;
 			}
+			else
+			{
+				if (count < closeTime * delta)
+				{
+					count += 100 * delta;
+				}
+				else
+				{
+					count = 0;
+					openTime = aRandom.nextInt(RANDOMTIME) + 150 * delta ;
+	
+					if (aRandom.nextInt(2) == 1)
+					{
+						hasPearl = true;
+					}
+					else
+					{
+						hasPearl = false;
+					}
+					
+					closed = true;
+				}
+			}
+		}
+		else
+		{
+			//System.out.println("SIMON IN PROGRESS");
 		}
 	}
 	
@@ -131,18 +161,56 @@ public class Clam {
 			if ((y1 > yy * WorldRenderer.ppuY && y1 < (yy + getBounds().height/1.5f) * WorldRenderer.ppuY) ||
 					(y1 + (aBox.height * 1.5f) > yy * WorldRenderer.ppuY && y1 + (aBox.height*1.5f )  < (yy + getBounds().height) * WorldRenderer.ppuY))
 			{
-				if (!closed)
+				
+				if (!simon)
 				{
-					return true;
+					if (!closed)
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
 				}
 				else
 				{
-					return false;
+					if (canPress)
+					{
+						aSimonController.addToPressList(ID);
+						canPress = false;
+					}
 				}
 			}
 		}
 		
 		return false;
 	}
+	
+	public void setSimon(boolean aBool)
+	{
+		simon = aBool;
+		
+		if (aBool == true)
+		{
+			hasPearl = false;
+		}
+	}
+	
+	public void open()
+	{
+		closed = false;
+	}
+	
+	public void close()
+	{
+		closed = true;
+	}
+	
+	public void setCanPress()
+	{
+		canPress = true;
+	}
+	
 
 }

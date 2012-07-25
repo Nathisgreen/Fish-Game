@@ -17,7 +17,7 @@ public class World {
 	
 	private Array<JellyFish> jellyArray = new Array<JellyFish>();
 	
-	private Array<Clam> clamArray = new Array<Clam>();
+	public static Array<Clam> clamArray = new Array<Clam>();
 	
 	private Array<ScoreText> scoreArray = new Array<ScoreText>();
 	
@@ -49,19 +49,20 @@ public class World {
 	private int life = 3;
 	
 	private Crab theCrab;
-	private int wallTimer = 0;
-	private int wallLastTime = 15 * 30;
+	private float wallTimer = 0;
+	private float wallLastTime = 30;
 	
 	private boolean doDestroy = false;
 	
 	private CrabAvoidController aCrabAvoidController = new CrabAvoidController();
 	
+	private SimonController aSimonController = new SimonController(this);
 	
 	
 	//GETTERS
 	public Array<Block> getBlocks(){
 		return blocks;
-	}
+	}	
 	public Bob getBob(){
 		return bob;
 	}
@@ -145,6 +146,7 @@ public class World {
 		aRandom = new Random();
 		selector = new SelectSquare();	
 		createDemoWorld();
+		aSimonController.simonBegin();
 	}
 	
 	public void checkSelected()
@@ -261,7 +263,7 @@ public class World {
 			level ++;
 			createBlocks();
 			
-			createMultiplyerText(level, new Vector2(300,150),1,3, 5.5f);
+			createMultiplyerText(level, new Vector2(3 * WorldRenderer.ppuX, 2 * WorldRenderer.ppuY),1,2, 4f);
 
 		}
 		
@@ -283,8 +285,7 @@ public class World {
 		
 		for (int i = 1; i < 4; i ++)
 		{
-			clamArray.add(new Clam(new Vector2(i *2 , (aRandom.nextFloat() /2) + 0.2f)));
-			
+			clamArray.add(new Clam(new Vector2(i *2 , (aRandom.nextFloat() /2) + 0.2f),i -1,aSimonController));
 		}
 
 	}
@@ -306,6 +307,7 @@ public class World {
 	
 	public void update(float delta)
 	{	
+		
 		if (!isFrozen)
 		{
 			for (Block aBlock : blocks)
@@ -435,7 +437,7 @@ public class World {
 		}
 		
 		
-		if (level == 3 || level == 6)
+		if (level == 10 || level == 20)
 		{
 			//only do this when beginning
 			if (wallTimer == 0)
@@ -445,10 +447,9 @@ public class World {
 			}
 			
 			//every frame stuff
-			if (wallTimer < wallLastTime)
+			if (wallTimer < wallLastTime )
 			{
-				wallTimer++;
-				//System.out.println("wallTimer " + wallTimer);
+				wallTimer += 1 * delta ;
 			}
 			else
 			{
@@ -463,9 +464,13 @@ public class World {
 			}
 		}
 		
-		aCrabAvoidController.update(delta, level);
+		aSimonController.update(delta);
+		
+		aCrabAvoidController.update(delta);
 		
 		theCrab.update(delta);
+		
+		
 		
 		for (CrabBullet aBullet: crabBulletArray)
 		{

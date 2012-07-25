@@ -156,10 +156,17 @@ public class GameScreen implements Screen, InputProcessor {
 
 	@Override
 	public boolean touchUp(int x, int y, int pointer, int button) {
+		
 		world.checkSelected();
 		world.getSelector().setTouched(false);
 		world.getSelector().setFirstCords(0, 0);
 		world.getSelector().setSecondCords(0, 0);
+		
+		for (Clam aClam: World.clamArray)
+		{
+			aClam.setCanPress();
+		}
+		
 		if (!Gdx.app.getType().equals(ApplicationType.Android))
 		{
 			return false;
