@@ -101,7 +101,7 @@ public class WorldRenderer {
 		}
 		
 		//atlas = new TextureAtlas("data/");
-		font = new BitmapFont(Gdx.files.internal("data/ariel.fnt"), Gdx.files.internal("data/ariel.png"), false);
+		font = new BitmapFont(Gdx.files.internal("data/fontNew.fnt"), Gdx.files.internal("data/fontNew.png"), false);
 		//font.scale(1.5f);
 	}
 	
@@ -279,21 +279,22 @@ public class WorldRenderer {
 		
 		for (ScoreText aText: world.getScoreArray())
 		{
-			font.setColor(0, 0, 0, aText.getAlpha());
-			font.draw(spriteBatch,"+ " + aText.getScore(),(aText.getPos().x - ( 1/ppuX)) * ppuX ,aText.getPos().y * ppuY );
-			font.draw(spriteBatch,"+ " + aText.getScore(),(aText.getPos().x + (1 / ppuY)) * ppuX ,aText.getPos().y * ppuY );
-			font.draw(spriteBatch,"+ " + aText.getScore(),aText.getPos().x  * ppuX ,(aText.getPos().y -(1 / ppuY)) * ppuY );
-			font.draw(spriteBatch,"+ " + aText.getScore(),aText.getPos().x  * ppuX ,(aText.getPos().y +(1 / ppuY)) * ppuY );
+			//font.setColor(0, 0, 0, aText.getAlpha());
+			//font.draw(spriteBatch,"+ " + aText.getScore(),(aText.getPos().x - ( 1/ppuX)) * ppuX ,aText.getPos().y * ppuY );
+			//font.draw(spriteBatch,"+ " + aText.getScore(),(aText.getPos().x + (1 / ppuY)) * ppuX ,aText.getPos().y * ppuY );
+			//font.draw(spriteBatch,"+ " + aText.getScore(),aText.getPos().x  * ppuX ,(aText.getPos().y -(1 / ppuY)) * ppuY );
+			//font.draw(spriteBatch,"+ " + aText.getScore(),aText.getPos().x  * ppuX ,(aText.getPos().y +(1 / ppuY)) * ppuY );
 			font.setColor(0, 1, 0, aText.getAlpha());
 			font.draw(spriteBatch,"+ " + aText.getScore(),aText.getPos().x * ppuX ,aText.getPos().y * ppuY );
 		}
 		
 		//HUD
+		font.setScale(1);
 		font.setColor(1, 1, 1, 1);
-		font.draw(spriteBatch,"Score: " + world.getScore(),10,20);
+		font.draw(spriteBatch,"Score: " + world.getScore(),10,40);
 		
 		
-		font.draw(spriteBatch,"Life: " + world.getLife()  ,10,40);
+		font.draw(spriteBatch,"Life: " + world.getLife()  ,10,70);
 		
 		
 		//debug draws
@@ -341,7 +342,7 @@ public class WorldRenderer {
 		
 		spriteBatch.end();
 		
-		//aLogger.log();
+		aLogger.log();
 		//drawDebug();
 		drawPowerUps();
 		drawSelector();
@@ -357,7 +358,17 @@ public class WorldRenderer {
 			debugRenderer.filledRect(0, 0, CAMERA_WIDTH * ppuX, CAMERA_HEIGHT * ppuY );
 			debugRenderer.end();
 			
-		}		
+		}	
+		
+		if (SimonController.green)
+		{
+			debugRenderer.setProjectionMatrix(cam.combined);
+			debugRenderer.setColor(0,1,0,1);
+			debugRenderer.begin(ShapeType.FilledRectangle);
+			
+			debugRenderer.filledRect(0, 0, CAMERA_WIDTH * ppuX, CAMERA_HEIGHT * ppuY );
+			debugRenderer.end();
+		}
 	}
 	
 	public static float getCameraHeight()

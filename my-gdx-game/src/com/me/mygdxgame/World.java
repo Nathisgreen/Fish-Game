@@ -58,7 +58,6 @@ public class World {
 	
 	private SimonController aSimonController = new SimonController(this);
 	
-	
 	//GETTERS
 	public Array<Block> getBlocks(){
 		return blocks;
@@ -146,128 +145,132 @@ public class World {
 		aRandom = new Random();
 		selector = new SelectSquare();	
 		createDemoWorld();
-		aSimonController.simonBegin();
+		//aSimonController.simonBegin();
 	}
 	
 	public void checkSelected()
 	{
-		Array<Block> allBlocks = new Array<Block>();
-		
-		allBlocks.addAll(blocks);
-		allBlocks.addAll(powerupList);
-		
-		for (Block aBlock: allBlocks)
+		//if the simon game isnt happening
+		if (!aSimonController.getIsSimoning())
 		{
-			float yy = WorldRenderer.getCameraHeight() - aBlock.getPosition().y;
-			if ((aBlock.getPosition().x + aBlock.getBounds().width)  * WorldRenderer.ppuX < selector.getX1() &&
-					aBlock.getPosition().x* WorldRenderer.ppuX > selector.getX() &&
-					(yy - aBlock.getBounds().height) * WorldRenderer.ppuY > selector.getY() &&
-					yy * WorldRenderer.ppuY < selector.getY1())
-			{
-				tempList.add(aBlock);
-			}
+			Array<Block> allBlocks = new Array<Block>();
 			
-			if (aBlock.getPosition().x * WorldRenderer.ppuX > selector.getX1() &&
-					(aBlock.getPosition().x + aBlock.getBounds().width)* WorldRenderer.ppuX < selector.getX() &&
-					yy * WorldRenderer.ppuY < selector.getY1() &&
-					(yy - aBlock.getBounds().height)  * WorldRenderer.ppuY > selector.getY())
-			{
-				tempList.add(aBlock);
-			}
+			allBlocks.addAll(blocks);
+			allBlocks.addAll(powerupList);
 			
-			if (aBlock.getPosition().x * WorldRenderer.ppuX > selector.getX1() &&
-					(aBlock.getPosition().x + aBlock.getBounds().width)* WorldRenderer.ppuX < selector.getX() &&
-					(yy- aBlock.getBounds().height) * WorldRenderer.ppuY  > selector.getY1() &&
-					yy  * WorldRenderer.ppuY < selector.getY())
+			for (Block aBlock: allBlocks)
 			{
-				tempList.add(aBlock);
-			}
-			
-			if (aBlock.getPosition().x * WorldRenderer.ppuX < selector.getX1() &&
-					aBlock.getPosition().x * WorldRenderer.ppuX > selector.getX() &&
-					(yy- aBlock.getBounds().height) * WorldRenderer.ppuY  > selector.getY1() &&
-					yy  * WorldRenderer.ppuY < selector.getY())
-			{
-				tempList.add(aBlock);
-			}
-		}
-
-		doDestroy = true;
-		int firstColor = -1;
-		numberInSelected = tempList.size;
-		if (tempList.size > 0)
-		{
-			for (Block aBlock2: tempList)
-			{
-				if (firstColor == -1)
+				float yy = WorldRenderer.getCameraHeight() - aBlock.getPosition().y;
+				if ((aBlock.getPosition().x + aBlock.getBounds().width)  * WorldRenderer.ppuX < selector.getX1() &&
+						aBlock.getPosition().x* WorldRenderer.ppuX > selector.getX() &&
+						(yy - aBlock.getBounds().height) * WorldRenderer.ppuY > selector.getY() &&
+						yy * WorldRenderer.ppuY < selector.getY1())
 				{
-					firstColor = aBlock2.getColor();
-					selectedColor = aBlock2.getColor();
+					tempList.add(aBlock);
 				}
-				else
+				
+				if (aBlock.getPosition().x * WorldRenderer.ppuX > selector.getX1() &&
+						(aBlock.getPosition().x + aBlock.getBounds().width)* WorldRenderer.ppuX < selector.getX() &&
+						yy * WorldRenderer.ppuY < selector.getY1() &&
+						(yy - aBlock.getBounds().height)  * WorldRenderer.ppuY > selector.getY())
 				{
-					if (aBlock2.getColor() != firstColor)
-					{
-						doDestroy = false;
-					}
+					tempList.add(aBlock);
+				}
+				
+				if (aBlock.getPosition().x * WorldRenderer.ppuX > selector.getX1() &&
+						(aBlock.getPosition().x + aBlock.getBounds().width)* WorldRenderer.ppuX < selector.getX() &&
+						(yy- aBlock.getBounds().height) * WorldRenderer.ppuY  > selector.getY1() &&
+						yy  * WorldRenderer.ppuY < selector.getY())
+				{
+					tempList.add(aBlock);
+				}
+				
+				if (aBlock.getPosition().x * WorldRenderer.ppuX < selector.getX1() &&
+						aBlock.getPosition().x * WorldRenderer.ppuX > selector.getX() &&
+						(yy- aBlock.getBounds().height) * WorldRenderer.ppuY  > selector.getY1() &&
+						yy  * WorldRenderer.ppuY < selector.getY())
+				{
+					tempList.add(aBlock);
 				}
 			}
-			
-			if (doDestroy)
-			{
-				if (tempList.size > 1)
-				{
-					float yy = WorldRenderer.getCameraHeight() - tempList.get(0).getPosition().y;
 	
-					createMultiplyerText(tempList.size, new Vector2 (tempList.get(0).getPosition().x * WorldRenderer.ppuX,
-							yy * WorldRenderer.ppuY),0,1,2.5f);
-					
-					if (powerBar < 100)
+			doDestroy = true;
+			int firstColor = -1;
+			numberInSelected = tempList.size;
+			if (tempList.size > 0)
+			{
+				for (Block aBlock2: tempList)
+				{
+					if (firstColor == -1)
 					{
-						powerBar += 10 * tempList.size;
+						firstColor = aBlock2.getColor();
+						selectedColor = aBlock2.getColor();
 					}
 					else
 					{
-						powerBar = 0;
-						createPowerUp();
+						if (aBlock2.getColor() != firstColor)
+						{
+							doDestroy = false;
+						}
 					}
 				}
 				
-				score += (tempList.size * 20) * tempList.size;
-				
-				for (Block aBlock1: tempList)
+				if (doDestroy)
 				{
-					if (aBlock1 instanceof Block)
-					{
-						blocks.removeValue(aBlock1, true);	
-					}
-					
 					if (tempList.size > 1)
 					{
-						if (aBlock1 instanceof PowerUp)
+						float yy = WorldRenderer.getCameraHeight() - tempList.get(0).getPosition().y;
+		
+						createMultiplyerText(tempList.size, new Vector2 (tempList.get(0).getPosition().x * WorldRenderer.ppuX,
+								yy * WorldRenderer.ppuY),0,1,2.5f);
+						
+						if (powerBar < 100)
 						{
-							PowerUp aPower = (PowerUp) aBlock1;
-							if (aPower.getType() == 0)
+							powerBar += 10 * tempList.size;
+						}
+						else
+						{
+							powerBar = 0;
+							createPowerUp();
+						}
+					}
+					
+					score += (tempList.size * 20) * tempList.size;
+					
+					for (Block aBlock1: tempList)
+					{
+						if (aBlock1 instanceof Block)
+						{
+							blocks.removeValue(aBlock1, true);	
+						}
+						
+						if (tempList.size > 1)
+						{
+							if (aBlock1 instanceof PowerUp)
 							{
-								isFrozen = true;
+								PowerUp aPower = (PowerUp) aBlock1;
+								if (aPower.getType() == 0)
+								{
+									isFrozen = true;
+								}
+								powerupList.removeValue((PowerUp)aBlock1, true);
 							}
-							powerupList.removeValue((PowerUp)aBlock1, true);
 						}
 					}
 				}
 			}
-		}
-		
-		if (blocks.size == 0)
-		{
-			level ++;
-			createBlocks();
 			
-			createMultiplyerText(level, new Vector2(3 * WorldRenderer.ppuX, 2 * WorldRenderer.ppuY),1,2, 4f);
-
+			if (blocks.size == 0)
+			{
+				level ++;
+				createBlocks();
+				
+				createMultiplyerText(level, new Vector2(3 * WorldRenderer.ppuX, 2 * WorldRenderer.ppuY),1,2, 4f);
+	
+			}
+			
+			tempList.clear();
 		}
-		
-		tempList.clear();
 		
 	}
 	
@@ -283,6 +286,7 @@ public class World {
 		
 		jellyArray.add(new JellyFish((new Vector2(1 + aRandom.nextInt(8), 1+ aRandom.nextInt(6)))));
 		
+		clamArray.clear();
 		for (int i = 1; i < 4; i ++)
 		{
 			clamArray.add(new Clam(new Vector2(i *2 , (aRandom.nextFloat() /2) + 0.2f),i -1,aSimonController));
@@ -300,14 +304,11 @@ public class World {
 		if (level % 5 == 0)
 		{
 			jellyArray.add(new JellyFish((new Vector2(-1, 1+ aRandom.nextInt(6)))));
-		}
-		
-		
+		}	
 	}
 	
 	public void update(float delta)
 	{	
-		
 		if (!isFrozen)
 		{
 			for (Block aBlock : blocks)
@@ -315,7 +316,6 @@ public class World {
 				aBlock.update(delta);
 			}
 		}
-
 		
 		for (PowerUp aPowerup: powerupList)
 		{
@@ -436,8 +436,22 @@ public class World {
 			}
 		}
 		
+		if (level == 10)
+		{	
+			if (!aSimonController.getIsSimoning()
+					&& !aSimonController.getIsDone())
+			{
+				aSimonController.simonBegin();
+			}
+			
+			if (aSimonController.getIsDone())
+			{
+				level++;
+				aSimonController.reset();
+			}
+		}
 		
-		if (level == 10 || level == 20)
+		if (level == 15)
 		{
 			//only do this when beginning
 			if (wallTimer == 0)
@@ -518,7 +532,7 @@ public class World {
 	}
 	
 	//handles player getting hurt logic
-	private void hurt() 
+	public void hurt() 
 	{
 		if (!hurt)
 		{
@@ -550,6 +564,7 @@ public class World {
 		clamArray.clear();
 		powerupList.clear();
 		
+		aSimonController.reset();
 		aCrabAvoidController.reset();
 		createDemoWorld();
 		

@@ -23,6 +23,8 @@ public class Clam {
 	
 	private boolean simon = false;
 	
+	private boolean simonSequencing = false;
+	
 	//if touch is being stored for simon
 	private boolean collect = false;
 	
@@ -145,6 +147,18 @@ public class Clam {
 		}
 		else
 		{
+			if (!closed)
+			{
+				if (count < closeTime/2 * delta)
+				{
+					count += 100 * delta;
+				}
+				else
+				{
+					count = 0;
+					closed = true;
+				}
+			}
 			//System.out.println("SIMON IN PROGRESS");
 		}
 	}
@@ -175,10 +189,15 @@ public class Clam {
 				}
 				else
 				{
-					if (canPress)
+					if (!simonSequencing)
 					{
-						aSimonController.addToPressList(ID);
-						canPress = false;
+						if (canPress)
+						{
+							aSimonController.addToPressList(ID);
+							canPress = false;
+							closed = false;
+							count = 0;
+						}
 					}
 				}
 			}
@@ -205,6 +224,7 @@ public class Clam {
 	public void close()
 	{
 		closed = true;
+		count = 0;
 	}
 	
 	public void setCanPress()
@@ -212,5 +232,9 @@ public class Clam {
 		canPress = true;
 	}
 	
+	public void setIsSequencing(boolean aBool)
+	{
+		simonSequencing = aBool;
+	}
 
 }

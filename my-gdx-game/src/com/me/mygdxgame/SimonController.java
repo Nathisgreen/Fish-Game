@@ -1,5 +1,6 @@
 package com.me.mygdxgame;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import com.badlogic.gdx.utils.Array;
@@ -9,10 +10,12 @@ public class SimonController {
 	//are we playing the simon game or not
 	private boolean isSimoning = false;
 	
-	//the lists that must be completed
-	private int[] list1 = new int[3];
-	private int[] list2 = new int[4];
-	private int[] list3 = new int[5];
+	private ArrayList<ArrayList<Integer>> sequenceList = new ArrayList<ArrayList<Integer>>();
+	//used to determin how many sequences have been generated
+	private int sequenceCount = 1;
+	
+	private ArrayList<Integer> activeList;
+	private int sequencesCompleted = 0;
 	
 	//what the user has inputted
 	private Array<Integer> userInputer = new Array<Integer>();
@@ -38,93 +41,73 @@ public class SimonController {
 	//the index in the sequence we are at
 	private int index = 0;
 	
-	//if the shell in teh sequence was opened or closed last
+	//if the shell in the sequence was opened or closed last
 	private boolean open = false;
 	
 	//if we should collect user input
 	private boolean collect = false;
 	
+	private boolean nextLevel = false;
+	private int nextLevelCount = 0;
+	private int nextLevelTime = 80;
+	
+	public static boolean green = false;
+	private int greenCounter = 0;
+	private int greenTime = 15;
+	
+	//is the game over or not
+	private boolean isDone = false;
+	
 	public SimonController(World aWorld)
 	{
 		//store the reference
 		parentWorld = aWorld;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void setUpSequences() {
 		
 		//store the previous generated number
 		int previousNumber = -1;
 		//the current generated number
 		int temp;
 		
-		//generate the random lists
-		for (int i = 0; i < 2; i ++)
+		ArrayList<Integer> tempList = new ArrayList<Integer>();
+		while (sequenceCount < 4)
 		{
-			//store the number
-			temp = aRandom.nextInt(3);
-
-			//make sure it isnt the same as the previous number
-			while (temp == previousNumber)
+			//generate the random lists
+			for (int i = 0; i < 2 ; i ++)
 			{
-				//store the new number
+				//store the number
 				temp = aRandom.nextInt(3);
-			}
-			
-			//set the previous number to this number
-			previousNumber = temp;
-			//set the index to be this number
-			list1[i] = temp;
-			
-			//this *should* generate sequences where the number isnt the same twice in a row
-			//(doesnt always work)
-			
-		}
-		
-		//same as above for second sequence
-		for (int i = 0; i < 3; i ++)
-		{
-			
-			temp = aRandom.nextInt(3);
-			
-			while (temp == previousNumber)
-			{
-				temp = aRandom.nextInt(3);
-			}
-			previousNumber = temp;
-			list2[i] = temp;
-		}
-		
-		
-		//same as above for third sequence
-		for (int i = 0; i < 4; i ++)
-		{
-			temp = aRandom.nextInt(3);
-			
-			while (temp == previousNumber)
-			{
-				temp = aRandom.nextInt(3);
-			}
-			previousNumber = temp;
-			list3[i] = temp;
-		}
-		
-		//debug prints
-		System.out.println("list 1: " );
-		for (int i = 0; i < list1.length; i++)
-		{
-			System.out.println(" " + list1[i] +"," );
-		}
-		
-		System.out.println("list 2: " );
-		for (int i = 0; i < list2.length; i++)
-		{
-			System.out.println(" " + list2[i] +"," );
-		}
-		
-		System.out.println("list 3: " );
-		for (int i = 0; i < list3.length; i++)
-		{
-			System.out.println(" " + list3[i] +"," );
-		}
-	}
 	
+				//make sure it isnt the same as the previous number
+				while (temp == previousNumber)
+				{
+					//store the new number
+					temp = aRandom.nextInt(3);
+				}
+				
+				//set the previous number to this number
+				previousNumber = temp;
+				//set the index to be this number
+				tempList.add(temp);
+				
+				//this *should* generate sequences where the number isnt the same twice in a row
+				
+			}
+			
+			System.out.println("List " +sequenceCount+ " contains: " + tempList);
+			ArrayList<Integer> tempList1;
+			tempList1 = (ArrayList<Integer>) tempList.clone();
+			sequenceList.add(tempList1);
+			sequenceCount++;
+		}
+		
+		activeList = sequenceList.get(0);
+		System.out.println("Active list is:" +sequenceList);
+	}
+
 	/**
 	 * Open a clam
 	 * @param ID the clam to open
@@ -155,19 +138,46 @@ public class SimonController {
 		}
 	}
 	
+	
 	/**
 	 * Begin the simon game
 	 */
 	public void simonBegin()
 	{
+		setUpSequences();
 		for (Clam aClam: parentWorld.getClamArray())
 		{
 			aClam.setSimon(true);
 			aClam.close();
+			aClam.setIsSequencing(true);
 		}
-		
+		isSimoning = true;
 		sequence = true;
 		index = 0;
+	}
+	
+	/**
+	 * reset the simon game incase of game over
+	 */
+	public void reset()
+	{
+		index = 0;
+		sequencesCompleted = 0;
+		sequenceCount = 1;
+		isDone = false;
+		isSimoning = false;
+		
+		//clear the sequence list
+		for (ArrayList<Integer> aList: sequenceList)
+		{
+			aList.clear();
+		}
+		sequenceList.clear();
+		
+		for (Clam aClam: World.clamArray)
+		{
+			aClam.setSimon(false);
+		}
 	}
 	
 	private void setCollect(boolean aBool)
@@ -183,13 +193,42 @@ public class SimonController {
 		//user cant input while sequence is happening
 		if (!sequence)
 		{
+			System.out.println("Adding " +aID+ " to input");
 			userInputer.add(aID);
 		}
 	}
 	
 	private boolean checkInput()
 	{
+		//boolean ok = true;
+		for (int i = 0; i < userInputer.size; i++)
+		{
+			if (userInputer.get(i) != activeList.get(i))
+			{
+				parentWorld.hurt();
+				return false;
+			}
+		}
+		System.out.println("INPUT THE SAME");
 		return true;
+	}
+	
+	/**
+	 *Returns if currently playing the simon game 
+	 * @return isSimoning
+	 */
+	public boolean getIsSimoning()
+	{
+		return isSimoning;
+	}
+	
+	/**
+	 * gets if the game has been completed or not
+	 * @return isDone
+	 */
+	public boolean getIsDone()
+	{
+		return isDone;
 	}
 	
 	/**
@@ -208,9 +247,9 @@ public class SimonController {
 			{
 				if (!open)
 				{
-					if (index < list1.length)
+					if (index < activeList.size())
 					{
-						openClam(list1[index]);
+						openClam(activeList.get(index));
 						open = true;
 						DelayTime = closeTime;
 						timer = 0;
@@ -220,15 +259,21 @@ public class SimonController {
 						sequence = false;
 						collect = true;
 						setCollect(collect);
+						index = 0;
+						
+						for (Clam aClam: World.clamArray)
+						{
+							aClam.setIsSequencing(false);
+						}
 					}
 				}
 				else
 				{
-					closeClam(list1[index]);
+					closeClam(activeList.get(index));
 					open = false;
 					DelayTime = openTime;
 					timer = 0;
-					if (index < list1.length)
+					if (index < activeList.size())
 					{
 						index++;
 					}
@@ -242,12 +287,75 @@ public class SimonController {
 		//same
 		if (collect)
 		{
-			if (userInputer.size == list1.length)
+			if (userInputer.size == activeList.size())
 			{
 				System.out.println("user input: " + userInputer);
-				checkInput();
 				collect = false;
 				setCollect(collect);
+				
+				if (checkInput())
+				{
+					sequencesCompleted++;
+					green = true;
+				}
+				
+				userInputer.clear();
+				
+				for (Clam aClam:World.clamArray)
+				{
+					aClam.close();
+				}
+				
+				if (sequencesCompleted < sequenceCount -1)
+				{
+					nextLevel = true;
+
+				}
+				else
+				{
+					isSimoning = false;
+					isDone = true;
+					for (Clam aClam: World.clamArray)
+					{
+						aClam.setSimon(false);
+					}
+							
+				}
+			}
+		}
+		
+		if (nextLevel)
+		{
+			if (nextLevelCount < nextLevelTime)
+			{
+				nextLevelCount += 70 * delta;
+			}
+			else
+			{
+				for (Clam aClam: World.clamArray)
+				{
+					aClam.close();
+					aClam.setIsSequencing(true);
+				}
+				
+				activeList = sequenceList.get(sequencesCompleted);
+				sequence = true;
+				nextLevel = false;
+				nextLevelCount = 0;
+			}
+		}
+		
+		//green flash when correct
+		if (green)
+		{
+			if (greenCounter < greenTime)
+			{
+				greenCounter+= 70 * delta;
+			}
+			else
+			{
+				greenCounter = 0;
+				green = false;
 			}
 		}
 	}
